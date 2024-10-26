@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
         // Update player and enemies
         player.update(window);
         for (auto& enemy : enemies) {
-            enemy.update(window, player.getX(), player.getY());
+            enemy.update(window, player.getX(), player.getY(), enemies);
         }
 
         // Clear and render

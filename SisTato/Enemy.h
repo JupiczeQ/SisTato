@@ -3,11 +3,12 @@
 
 #include "Character.h"
 #include <SDL.h>
+#include <vector>
 
 class Enemy : public Character {
 public:
     Enemy(int x, int y, int width, int height, int hp, int damage, int speed);
-    void update(SDL_Window* window, int playerX, int playerY); // Override to follow player
+    void update(SDL_Window* window, int playerX, int playerY, std::vector<Enemy>& enemies); // Override to follow player
     void render(SDL_Renderer* renderer) override;
 
     // Handle damage and check if the enemy is alive
@@ -16,6 +17,7 @@ public:
 
 private:
     void followPlayer(int playerX, int playerY);
+    void avoidCollisions(std::vector<Enemy>& enemies);
 };
 
 #endif
