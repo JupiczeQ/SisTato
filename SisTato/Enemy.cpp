@@ -2,8 +2,8 @@
 #include <cmath> // For sqrt
 #include <stdio.h>
 #include <vector>
-Enemy::Enemy(int x, int y, int width, int height, int hp, int damage, int speed)
-    : Character(x, y, width, height, hp, damage, speed) {}
+Enemy::Enemy(int x, int y, int width, int height, int hp, int speed)
+    : Character(x, y, width, height, hp, speed) {}
 
 void Enemy::update(SDL_Window* window, int playerX, int playerY, std::vector<Enemy>& enemies) {
     followPlayer(playerX, playerY);
@@ -31,7 +31,7 @@ void Enemy::followPlayer(int playerX, int playerY) {
 
 void Enemy::avoidCollisions(std::vector<Enemy>& enemies) {
     const float collisionRadius = 30.0f;
-    const float repulsionStrength = 1.0f;
+    const float repulsionStrength = 1.1f;
 
     for (auto& other : enemies) {
         if (&other == this) continue;

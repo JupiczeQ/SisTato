@@ -2,8 +2,8 @@
 #include "Player.h"
 #include "Enemy.h"
 #include <vector>
-#include <cstdlib> // For rand and srand
-#include <ctime>   // For time to seed rand
+#include <cstdlib>
+#include <ctime>
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -14,14 +14,14 @@ int main(int argc, char* argv[]) {
     SDL_Window* window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
 
-    Player player(300, 200, 20, 20, 100, 10, 5, 10, 300); // Example player setup with 300ms reload time
+    Player player(300, 200, 20, 20, 100, 5, 10, 300, 10); // Updated to match the new constructor
 
-    std::vector<Enemy> enemies; // List to store enemies
+    std::vector<Enemy> enemies;
 
-    Uint32 lastEnemySpawnTime = 0; // Time tracking for enemy spawn
-    const int spawnInterval = 5000; // 5 seconds
+    Uint32 lastEnemySpawnTime = 0;
+    const int spawnInterval = 2000;
 
-    srand(static_cast<unsigned int>(time(0))); // Seed random number generator
+    srand(static_cast<unsigned int>(time(0)));
 
     bool isRunning = true;
     SDL_Event event;
@@ -32,26 +32,22 @@ int main(int argc, char* argv[]) {
             player.handleEvent(event);
         }
 
-        // Spawn new enemy every 5 seconds
         Uint32 currentTime = SDL_GetTicks();
         if (currentTime - lastEnemySpawnTime >= spawnInterval) {
             lastEnemySpawnTime = currentTime;
 
             int x = rand() % WINDOW_WIDTH;
-            int y = rand() % WINDOW_HEIGHT; // Spawn at the top of the screen for example
+            int y = rand() % WINDOW_HEIGHT;
 
-            // Add a new enemy with random position and basic stats
-            enemies.emplace_back(x, y, 20, 20, 50, 5, 3); // Example enemy with hp=50, damage=5, speed=3
+            enemies.emplace_back(x, y, 20, 20, 50, 3);
         }
 
-        // Update player and enemies
         player.update(window);
         for (auto& enemy : enemies) {
             enemy.update(window, player.getX(), player.getY(), enemies);
         }
 
-        // Clear and render
-        SDL_SetRenderDrawColor(renderer, 63, 155, 11, 255); // Green background
+        SDL_SetRenderDrawColor(renderer, 63, 155, 11, 255);
         SDL_RenderClear(renderer);
 
         player.render(renderer);

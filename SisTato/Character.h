@@ -5,7 +5,7 @@
 
 class Character {
 public:
-    Character(int x, int y, int width, int height, int hp, int damage, float speed);
+    Character(int x, int y, int width, int height, int hp, float speed);
 
     virtual void handleEvent(SDL_Event& event) {}
     virtual void update(SDL_Window* window);
@@ -13,7 +13,7 @@ public:
 
     int getX() const;
     int getY() const;
-    
+
     void takeDamage(int amount);
     bool isAlive() const;
 
@@ -21,7 +21,6 @@ protected:
     int x, y;
     int width, height;
     int hp;
-    int damage;
     float speed;
     SDL_Rect rect;
 

@@ -1,8 +1,8 @@
 #include "Character.h"
 #include <cmath>
 
-Character::Character(int x, int y, int width, int height, int hp, int damage, float speed)
-    : x(x), y(y), width(width), height(height), hp(hp), damage(damage), speed(speed) {
+Character::Character(int x, int y, int width, int height, int hp, float speed)
+    : x(x), y(y), width(width), height(height), hp(hp), speed(speed) {
     rect = { x, y, width, height };
 }
 
@@ -15,7 +15,6 @@ int Character::getY() const {
 }
 
 void Character::update(SDL_Window* window) {
-
     int windowWidth, windowHeight;
     SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
@@ -24,31 +23,29 @@ void Character::update(SDL_Window* window) {
     if (diagonal)
         adjustedSpeed /= std::sqrt(2);
 
-    // Apply movement based on flags with boundary checks and edge snapping
     if (moveUp) {
         y -= adjustedSpeed;
-        if (y < 0) y = 0;  // Snap to top edge if crossing
+        if (y < 0) y = 0;
     }
     if (moveDown) {
         y += adjustedSpeed;
-        if (y + height > windowHeight) y = windowHeight - height; // Snap to bottom edge if crossing
+        if (y + height > windowHeight) y = windowHeight - height;
     }
     if (moveLeft) {
         x -= adjustedSpeed;
-        if (x < 0) x = 0;  // Snap to left edge if crossing
+        if (x < 0) x = 0;
     }
     if (moveRight) {
         x += adjustedSpeed;
-        if (x + width > windowWidth) x = windowWidth - width; // Snap to right edge if crossing
+        if (x + width > windowWidth) x = windowWidth - width;
     }
 
-    // Update the rectangle position
     rect.x = x;
     rect.y = y;
 }
 
 void Character::render(SDL_Renderer* renderer) {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Render color for character
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
 

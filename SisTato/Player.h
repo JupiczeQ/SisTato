@@ -6,16 +6,13 @@
 
 class Player : public Character {
 public:
-
-    Player(int x, int y, int width, int height, int hp, int damage, int speed, int missileSpeed, int reloadTime);
+    Player(int x, int y, int width, int height, int hp, int speed, int missileSpeed, int reloadTime, int damage);
     void handleEvent(SDL_Event& event) override;
     void update(SDL_Window* window) override;
     void render(SDL_Renderer* renderer) override;
 
 private:
-    Gun gun; // Gun for handling missiles
-
-    // Flags to track arrow key states for automatic shooting
+    Gun gun;
     bool shootingUp = false;
     bool shootingDown = false;
     bool shootingLeft = false;
