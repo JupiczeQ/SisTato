@@ -55,6 +55,11 @@ void Enemy::takeDamage(int amount) {
 bool Enemy::isAlive() const {
     return hp > 0;
 }
+
+SDL_Rect Enemy::getRect() const {
+    return rect;
+}
+
 void Enemy::render(SDL_Renderer* renderer) {
     // Render the enemy as a filled red rectangle
     SDL_SetRenderDrawColor(renderer, 255, 50, 50, 255); // Red fill

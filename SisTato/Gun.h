@@ -11,7 +11,8 @@ public:
     void shoot(int startX, int startY, int directionX, int directionY);
     void update(SDL_Window* window);
     void render(SDL_Renderer* renderer);
-    int getDamage() const;  // Add this getter for damage
+    int getDamage() const;
+    std::vector<Missile>& getMissiles();
 
 private:
     std::vector<Missile> missiles;

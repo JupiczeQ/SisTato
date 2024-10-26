@@ -10,6 +10,7 @@ public:
     void handleEvent(SDL_Event& event) override;
     void update(SDL_Window* window) override;
     void render(SDL_Renderer* renderer) override;
+    std::vector<Missile>& getMissiles();
 
 private:
     Gun gun;

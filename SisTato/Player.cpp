@@ -49,3 +49,8 @@ void Player::render(SDL_Renderer* renderer) {
     Character::render(renderer);
     gun.render(renderer);
 }
+
+std::vector<Missile>& Player::getMissiles()
+{
+    return gun.getMissiles();
+}

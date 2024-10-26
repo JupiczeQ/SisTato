@@ -14,7 +14,9 @@ public:
     // Handle damage and check if the enemy is alive
     void takeDamage(int amount);
     bool isAlive() const;
-        
+    
+    SDL_Rect getRect() const;
+
 private:
     void followPlayer(int playerX, int playerY);
     void avoidCollisions(std::vector<Enemy>& enemies);

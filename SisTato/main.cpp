@@ -1,9 +1,13 @@
 #include <SDL.h>
 #include "Player.h"
 #include "Enemy.h"
+#include "Gun.h"
+#include "Utils.h"
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+
+
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -39,12 +43,42 @@ int main(int argc, char* argv[]) {
             int x = rand() % WINDOW_WIDTH;
             int y = rand() % WINDOW_HEIGHT;
 
-            enemies.emplace_back(x, y, 20, 20, 50, 3);
+            enemies.emplace_back(x, y, 20, 20, 20, 3);
         }
 
         player.update(window);
-        for (auto& enemy : enemies) {
-            enemy.update(window, player.getX(), player.getY(), enemies);
+        for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ) {
+            enemyIt->update(window, player.getX(), player.getY(), enemies);
+
+            // Get missiles from player
+            auto& missiles = player.getMissiles();
+            bool enemyHit = false;
+
+            for (auto missileIt = missiles.begin(); missileIt != missiles.end(); ) {
+                if (Utils::checkCollision(missileIt->getRect(), enemyIt->getRect())) {
+                    enemyIt->takeDamage(missileIt->getDamage()); // Apply damage to the enemy
+
+                    // Erase the missile and update the iterator
+                    missileIt = missiles.erase(missileIt);
+                    enemyHit = true;
+
+                    // If enemy is dead, break out of missile loop to handle enemy removal
+                    if (!enemyIt->isAlive()) {
+                        break;
+                    }
+                }
+                else {
+                    ++missileIt;
+                }
+            }
+
+            // Remove enemy if it is no longer alive
+            if (!enemyIt->isAlive()) {
+                enemyIt = enemies.erase(enemyIt);
+            }
+            else {
+                ++enemyIt;
+            }
         }
 
         SDL_SetRenderDrawColor(renderer, 63, 155, 11, 255);

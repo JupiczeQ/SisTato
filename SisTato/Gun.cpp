@@ -7,7 +7,7 @@ Gun::Gun(int missileSpeed, int reloadTime, int damage)
 void Gun::shoot(int startX, int startY, int directionX, int directionY) {
     Uint32 currentTime = SDL_GetTicks();
     if (currentTime - lastShotTime >= reloadTime) {
-        missiles.emplace_back(startX, startY, missileSpeed, directionX, directionY);
+        missiles.emplace_back(startX, startY, missileSpeed, directionX, directionY, damage);
         lastShotTime = currentTime;
     }
 }
@@ -24,6 +24,7 @@ void Gun::update(SDL_Window* window) {
         else {
             ++it;
         }
+
     }
 }
 
@@ -35,4 +36,9 @@ void Gun::render(SDL_Renderer* renderer) {
 
 int Gun::getDamage() const {
     return damage;
+}
+
+std::vector<Missile>& Gun::getMissiles()
+{
+    return missiles;
 }
