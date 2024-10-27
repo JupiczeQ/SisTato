@@ -2,14 +2,17 @@
 #include <cmath> // For sqrt
 #include <stdio.h>
 #include <vector>
-Enemy::Enemy(int x, int y, int width, int height, int hp, int speed)
-    : Character(x, y, width, height, hp, speed) {}
+Enemy::Enemy(int x, int y, int width, int height, int hp, int speed, SDL_Renderer* renderer)
+    : Character(x, y, width, height, hp, speed), isDeadFlag(false), renderer(renderer), deathAnimation(nullptr) {}
 
 void Enemy::update(SDL_Window* window, int playerX, int playerY, std::vector<Enemy>& enemies) {
-    followPlayer(playerX, playerY);
-    avoidCollisions(enemies);
-
-    // Update the rectangle position for rendering
+    if (!isDeadFlag) {
+        followPlayer(playerX, playerY);
+        avoidCollisions(enemies);
+    }
+    else if (deathAnimation) {
+        deathAnimation->update();
+    }
     rect.x = x;
     rect.y = y;
 }
@@ -47,13 +50,24 @@ void Enemy::avoidCollisions(std::vector<Enemy>& enemies) {
         }
     }
 }
-
 void Enemy::takeDamage(int amount) {
     hp -= amount;
+    if (hp <= 0 && !isDeadFlag) {
+        isDeadFlag = true;
+        deathAnimation = std::make_unique<DeathAnimation>(renderer, x, y);
+    }
 }
 
 bool Enemy::isAlive() const {
     return hp > 0;
+}
+
+bool Enemy::isDead() const {
+    return isDeadFlag;
+}
+
+bool Enemy::isDeathAnimationFinished() const {
+    return deathAnimation && deathAnimation->isFinished();
 }
 
 SDL_Rect Enemy::getRect() const {
@@ -61,11 +75,11 @@ SDL_Rect Enemy::getRect() const {
 }
 
 void Enemy::render(SDL_Renderer* renderer) {
-    // Render the enemy as a filled red rectangle
-    SDL_SetRenderDrawColor(renderer, 255, 50, 50, 255); // Red fill
-    SDL_RenderFillRect(renderer, &rect);
-
-    // Render the outline of the enemy rectangle
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black outline
-    SDL_RenderDrawRect(renderer, &rect);
+    if (!isDeadFlag) {
+        SDL_SetRenderDrawColor(renderer, 255, 50, 50, 255);
+        SDL_RenderFillRect(renderer, &rect);
+    }
+    else if (deathAnimation) {
+        deathAnimation->render(renderer);
+    }
 }

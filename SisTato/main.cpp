@@ -43,43 +43,38 @@ int main(int argc, char* argv[]) {
             int x = rand() % WINDOW_WIDTH;
             int y = rand() % WINDOW_HEIGHT;
 
-            enemies.emplace_back(x, y, 20, 20, 20, 3);
+            enemies.emplace_back(x, y, 20, 20, 20, 3, renderer); // Add renderer as the last argument
         }
 
         player.update(window);
         for (auto enemyIt = enemies.begin(); enemyIt != enemies.end(); ) {
             enemyIt->update(window, player.getX(), player.getY(), enemies);
 
-            // Get missiles from player
             auto& missiles = player.getMissiles();
             bool enemyHit = false;
 
             for (auto missileIt = missiles.begin(); missileIt != missiles.end(); ) {
                 if (Utils::checkCollision(missileIt->getRect(), enemyIt->getRect())) {
-                    enemyIt->takeDamage(missileIt->getDamage()); // Apply damage to the enemy
-
-                    // Erase the missile and update the iterator
+                    enemyIt->takeDamage(missileIt->getDamage());
                     missileIt = missiles.erase(missileIt);
                     enemyHit = true;
-
-                    // If enemy is dead, break out of missile loop to handle enemy removal
-                    if (!enemyIt->isAlive()) {
-                        break;
-                    }
+                    if (!enemyIt->isAlive()) break;
                 }
                 else {
                     ++missileIt;
                 }
             }
 
-            // Remove enemy if it is no longer alive
-            if (!enemyIt->isAlive()) {
+            // Check if enemy is dead and animation has finished
+            if (enemyIt->isDead() && enemyIt->isDeathAnimationFinished()) {
                 enemyIt = enemies.erase(enemyIt);
             }
             else {
+                enemyIt->render(renderer);
                 ++enemyIt;
             }
         }
+
 
         SDL_SetRenderDrawColor(renderer, 63, 155, 11, 255);
         SDL_RenderClear(renderer);
